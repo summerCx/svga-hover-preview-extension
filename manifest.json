@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "SVGA 预览插件",
+  "version": "1.0.0",
+  "description": "鼠标悬浮在SVGA链接上时直接预览动画",
+  "permissions": [],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["preview.css"],
+      "all_frames": true
+    }
+  ],
+  "sandbox": {
+    "pages": ["sandbox.html"]
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["sandbox.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
