@@ -1,0 +1,28 @@
+#svga-preview-container {
+  position: fixed;
+  z-index: 999999;
+  background: rgba(0, 0, 0, 0.95);
+  border: 2px solid #4CAF50;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  display: none;
+  pointer-events: none;
+  width: 320px;
+  min-height: 60px;
+}
+
+#svga-preview-iframe {
+  display: none;
+  width: 300px;
+  height: 220px;
+  border: none;
+  background: transparent;
+}
+
+.svga-preview-loading {
+  color: #fff;
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
+}
