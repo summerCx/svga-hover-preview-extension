@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: transparent;
+    }
+    canvas {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+    }
+    .loading {
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="loading">加载中...</div>
+  <canvas id="canvas"></canvas>
+  <script src="svgaparser.min.js"></script>
+  <script>
+    let currentPlayer = null;
+
+    // 监听来自content script的消息
+    window.addEventListener('message', function(event) {
+      const { action, url } = event.data;
+
+      if (action === 'load') {
+        loadSVGA(url);
+      } else if (action === 'clear') {
+        clearPlayer();
+      }
+    });
+
+    function loadSVGA(url) {
+      console.log('[Sandbox] 加载SVGA:', url);
+      const canvas = document.getElementById('canvas');
+      const loading = document.querySelector('.loading');
+
+      loading.style.display = 'block';
+      canvas.style.display = 'none';
+
+      // 清理之前的播放器
+      clearPlayer();
+
+      const parser = new SVGA.Parser();
+      parser.load(url, (videoItem) => {
+        console.log('[Sandbox] 加载成功');
+        loading.style.display = 'none';
+        canvas.style.display = 'block';
+
+        // 设置canvas尺寸
+        const videoSize = videoItem.videoSize;
+        canvas.width = Math.min(videoSize.width, 300);
+        canvas.height = Math.min(videoSize.height, 220);
+
+        const player = new SVGA.Player(canvas);
+        currentPlayer = player;
+
+        player.setVideoItem(videoItem);
+        player.loops = 0; // 无限循环
+        player.startAnimation();
+
+        // 通知父窗口加载成功
+        window.parent.postMessage({
+          action: 'loaded',
+          width: canvas.width,
+          height: canvas.height
+        }, '*');
+      }, (error) => {
+        console.error('[Sandbox] 加载失败:', error);
+        loading.textContent = '加载失败';
+        window.parent.postMessage({ action: 'error', error: error.message }, '*');
+      });
+    }
+
+    function clearPlayer() {
+      if (currentPlayer) {
+        currentPlayer.clear();
+        currentPlayer = null;
+      }
+    }
+
+    // 通知父窗口sandbox已准备好
+    window.parent.postMessage({ action: 'ready' }, '*');
+  </script>
+</body>
+</html>
