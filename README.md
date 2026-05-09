@@ -10,7 +10,7 @@
 2. 访问 `chrome://extensions/`
 3. 开启右上角的"开发者模式"
 4. 点击"加载已解压的扩展程序"
-5. 选择本插件的文件夹路径：`/Users/liuwenxiao/store/chrome`
+5. 选择本插件的文件夹路径：`/Users/summerCx/store/chrome`
 
 ## 使用方法
 
